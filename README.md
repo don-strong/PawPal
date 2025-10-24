@@ -1,79 +1,77 @@
 # 🧭 CS 301 Group Project — README Template
 
-Use this README as the front page of your team’s GitHub repository.  
-Fill out every section clearly. The **FlowSpace** example is shown in *italics* to demonstrate what a complete entry looks like.
-
 ---
 
 ## 📘 Project Name
-**Your Entry:**  
-> *(e.g., FlowSpace)*  
-A smart scheduling assistant that helps users maximize contiguous blocks of personal well-being time by reorganizing flexible events in their calendar.
+**PawPal**
+<br>
+A Pet Medication Tracker for Owners
 
 ---
 
 ## 👥 Group Members / Contributors
-**Your Entry:**  
 | Name | Role | GitHub Username |
 |------|------|-----------------|
-| Alice Example | Project Manager / Developer | @alice-example |
-| Bob Example | Frontend Developer | @bob-example |
-| Carol Example | Backend Developer | @carol-example |
-| Dave Example | QA / Documentation | @dave-example |
-
-*(Include all team members with their primary roles.)*
+| Jesse Singleton | Project Developer | @CodeSkrillington |
+| Emilee Stone | ProjectDeveloper | @mlee-stone |
+| Chase Andersen | Project Developer | @chaseandersen |
 
 ---
 
 ## 🧭 Brief Background About the Project
-**Your Entry:**  
-> *(Example:)*  
-Modern life often fragments our days with meetings, alerts, and micro-tasks. **FlowSpace** helps users reclaim their time by analyzing their calendar and reorganizing flexible events to preserve long, uninterrupted periods of personal focus or rest.
+Pet owners frequently struggle to maintain consistent medication schedules for their pets, especially when juggling multiple responsibilities. Missed or mistimed doses can lead to serious health consequences, and current solutions—such as verbal instructions or printed handouts—are often unreliable or easily lost. This issue affects not only pet owners but also veterinarians and the broader community, especially when untreated conditions (e.g., fleas) spread beyond the home.
 
-Your description should summarize:
-- The **problem** your app addresses  
-- The **target users**  
-- The **benefit/value** your solution provides  
+PawPal is a simple, intuitive web application designed to help pet owners manage their 
+pets’ medication schedules. 
 
----
+The system targets:
+- Primary Users: Pet owners managing one or more pets with recurring medication needs
+- Secondary Stakeholders: Veterinarians seeking to improve client compliance and community health
 
-## ⚙️ Current Features
-**Your Entry:**  
-> *(Example:)*  
-- Well-Being Block Optimizer — finds the longest contiguous free time each day  
-- Smart Re-Scheduling — recommends moving flexible events to protect downtime  
-- Balance Dashboard — visualizes work vs. personal time each week  
-- Reflection Prompts — short daily check-ins that improve future suggestions  
-- Notification System — gentle reminders to preserve your “flow blocks”
+The project aims to:
+- Improve medication compliance through reminders and visual tracking
+- Provide peace of mind for pet owners
+- Deliver a working MVP that demonstrates core functionality and is easy to test and extend
 
-List all features that are **currently implemented** or **in progress**.
+
+## ⚙️ Current Features  
+
+> *Core Features:*
+- Account Creation
+- User Login
+- Pet Profiles: Create and edit pet profiles with basic info (name, species, age)
+- Medication Entry: Add medications with dosage, frequency, and start/end dates
+- Reminder Dashboard: Display upcoming doses in a simple dashboard view
+- Dose Logging: Mark doses as administered and view recent history
+ 
+
+ > *Stretch Goals:*
+ - Calendar View: Visualize upcoming doses with color-coded pets
+ - Push Notifications: Email alerts for upcoming doses
+ - Appointment Logging: Track vet or grooming appointments
+ - Family Sharing invitations: Allow family members or caregivers to securely view and manage pet information
+
+
 
 ---
 
 ## 🧩 Planned Features / Future Work
-**Your Entry:**  
-> *(Example:)*  
-- Calendar sync (Google, Outlook, Apple)  
-- AI-assisted schedule optimization  
-- Mood trend visualizations  
-- Shared calendar support for households or teams
+ 
+> ***SEE CURRENT FEATURES LIST***
 
 ---
 
 ## 📅 Week-by-Week Plan
-*(This should align with your project’s real timeline — update each week’s goals.)*
 
-| **Week** | **Milestone / Deliverables** | **Owners** | **Evidence (PRs/Links/Demos)** |
-|-----------|------------------------------|-------------|--------------------------------|
-| 1 | Define functional requirements; set up repo | Alice, Bob | README.md, requirements doc |
-| 2 | Create wireframes + initial backend skeleton | Carol, Dave | `/design`, `/api` folders |
-| 3 | Implement Core Function A (calendar parser) | Team | Commit hash, screenshots |
-| 4 | Integrate dashboard + basic UI | Bob | Deployed demo |
-| 5 | Add rescheduling logic | Carol | Pull request #23 |
-| 6 | Refine algorithm, write tests | Dave | Test coverage report |
-| 7 | Add user reflections + notifications | Alice | Feature branch merge |
-| 8 | Final polish + presentation | Team | Video demo, final slides |
-
+| Week              | Goals                                                   | Deliverables                                                       | Dependencies                                         | Evidence                                                                 |
+|-------------------|----------------------------------------------------------|--------------------------------------------------------------------|------------------------------------------------------|-------------------------------------------------------------------------|
+| Week 1 (Oct 20–24) | Finalize revised proposal, RSD, and README              | Uploaded docs to Canvas<br>Merged README                           | Team coordination<br>Approvals                       | Updated proposal & RSD on Canvas<br>README merged in main repository   |
+| Week 2 (Oct 27–31) | Create basic app/page design layouts<br>Finish database setup | App design sketches or screenshots<br>Completed database setup     | Agreement on design layout<br>Database structure     | Design screenshots<br>Database files uploaded to GitHub                |
+| Week 3 (Nov 3–7)   | Build sign-up and login pages with email verification   | Functional login/sign-up screens<br>Connected to database          | Database setup<br>Authentication system              | Demo screenshots<br>Commit logs<br>Merged on GitHub                    |
+| Week 4 (Nov 10–14) | Add pet profile features (create, view, edit, delete)   | Fully working pet profile section                                  | Completed login system<br>Working database connection | Demo screenshots or short video<br>PRs merged                          |
+| Week 5 (Nov 17–21) | Add medication tracking and reminder notifications      | Medication form<br>Reminder system with timely alerts              | Working pet profiles<br>Notification setup           | Screenshots of reminders<br>Commit history                             |
+| Week 6 (Nov 24–28) | Add reminder dashboard<br>Enhance UI display            | Calendar and dashboard showing all reminders                       | Working database<br>Reminder system                  | Demo video or screenshots<br>PR merge confirmations<br>Commit records |
+| Week 7 (Dec 1–5)   | Test the app<br>Fix bugs<br>Finalize documentation      | Final working version of PawPal<br>Project documentation<br>Updated README | All main features complete and merged               | Test results<br>Updated README<br>Final version merged to GitHub      |
 ---
 
 ## 🧠 Definition of Done (DoD)
@@ -88,26 +86,19 @@ A feature is **done** when:
 
 ## 💻 How to Run
 
-**Your Entry:**
-> *(Example: FlowSpace)*
 
 ### 1. Clone Repository
 ```
-git clone https://github.com/example-url/flowspace.git
-cd flowspace
+git clone https://github.com/don-strong/PawPal.git
+cd PawPal
 ```
 
-### 2. Backend Setup (Python/Flask)
-```
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-flask run
+### 2. Backend Setup (Pending)
 ```
 
-### 3. Frontend Setup (React)
 ```
-cd client
-npm install
-npm start
+
+### 3. Frontend Setup (Pending)
+```
+
 ```
