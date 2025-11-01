@@ -13,13 +13,13 @@ A Pet Medication Tracker for Owners
 | Name | Role | GitHub Username |
 |------|------|-----------------|
 | Jesse Singleton | Project Developer | @CodeSkrillington |
-| Emilee Stone | ProjectDeveloper | @mlee-stone |
-| Chase Andersen | Project Developer | @chaseandersen |
+| Emilee Stone | Project Developer | @mlee-stone |
+| Chase Anderson | Project Developer | @chaseanderson |
 
 ---
 
 ## 🧭 Brief Background About the Project
-Pet owners frequently struggle to maintain consistent medication schedules for their pets, especially when juggling multiple responsibilities. Missed or mistimed doses can lead to serious health consequences, and current solutions—such as verbal instructions or printed handouts—are often unreliable or easily lost. This issue affects not only pet owners but also veterinarians and the broader community, especially when untreated conditions (e.g., fleas) spread beyond the home.
+Pet owners frequently struggle maintain consistent medication schedules for their pets, especially when juggling multiple responsibilities. Missed or mistimed doses can lead to serious health consequences, and current solutions—such as verbal instructions or printed handouts—are often unreliable or easily lost. This issue affects not only pet owners but also veterinarians and the broader community, especially when untreated conditions (e.g., fleas) spread beyond the home.
 
 PawPal is a simple, intuitive web application designed to help pet owners manage their 
 pets’ medication schedules. 
@@ -36,20 +36,25 @@ The project aims to:
 
 ## ⚙️ Current Features  
 
-> *Core Features:*
-- Account Creation
-- User Login
-- Pet Profiles: Create and edit pet profiles with basic info (name, species, age)
-- Medication Entry: Add medications with dosage, frequency, and start/end dates
-- Reminder Dashboard: Display upcoming doses in a simple dashboard view
-- Dose Logging: Mark doses as administered and view recent history
- 
+> *Core Features Implemented:*
+- ✅ **Modular Authentication System** - Reusable `auth-module.js` for user login/signup
+- ✅ **User Account Creation** - Sign up with email and password
+- ✅ **User Login** - Secure login with password verification
+- ✅ **Simplified Login Interface** - Clean login-first design with signup accessible via link
+- ✅ **Frontend Authentication** - LocalStorage-based user management
+- ✅ **Backend Authentication API** - Flask API with production-ready endpoints
+- ✅ **Responsive Design** - Mobile-friendly UI with modern styling
+- ✅ **Custom Branding** - PawPal theme with consistent styling across pages
+- ✅ **Background Image Support** - Website template with customizable background
 
- > *Stretch Goals:*
- - Calendar View: Visualize upcoming doses with color-coded pets
- - Push Notifications: Email alerts for upcoming doses
- - Appointment Logging: Track vet or grooming appointments
- - Family Sharing invitations: Allow family members or caregivers to securely view and manage pet information
+> *Stretch Goals (Future):*
+- Pet Profiles: Create and manage pet information (name, species, age, medical history)
+- Medication Entry: Add medications with dosage, frequency, and schedules
+- Reminder Dashboard: Display upcoming medication reminders
+- Dose Logging: Track administered doses and view history
+- Calendar View: Visualize medication schedules
+- Email Notifications: Alert system for upcoming doses
+- Family Sharing: Multi-user access to pet information
 
 
 
@@ -57,7 +62,18 @@ The project aims to:
 
 ## 🧩 Planned Features / Future Work
  
-> ***SEE CURRENT FEATURES LIST***
+> **Phase 2 (Next Sprint):**
+- Pet profile creation and management
+- Medication tracking system
+- Basic reminder functionality
+- Dashboard for viewing upcoming doses
+
+> **Phase 3 (Extended):**
+- Calendar view for medication schedules
+- Email notification system
+- Dose history and reporting
+- Family/caregiver sharing features
+- Admin dashboard
 
 ---
 
@@ -86,19 +102,44 @@ A feature is **done** when:
 
 ## 💻 How to Run
 
-
 ### 1. Clone Repository
-```
+```bash
 git clone https://github.com/don-strong/PawPal.git
 cd PawPal
 ```
 
-### 2. Backend Setup (Pending)
+### 2. Frontend Setup
+```bash
+# No dependencies required - open in browser
+# Option A: Open directly
+open modular-login.html
+
+# Option B: Use local server
+python -m http.server 8000
+# Then visit: http://localhost:8000/modular-login.html
 ```
 
+### 3. Backend Setup (Optional - Full Stack Mode)
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Start Flask API
+python flask-auth-api.py
+# Server runs on http://localhost:5000
 ```
 
-### 3. Frontend Setup (Pending)
+### 4. Switch Authentication Mode
+**Frontend-only (LocalStorage):**
+```javascript
+const auth = new PawPalAuth({
+    storageKey: 'pawpal_user'
+});
 ```
 
+**Full-stack (Flask API):**
+```javascript
+const auth = new PawPalAuth({
+    apiEndpoint: 'http://localhost:5000'
+});
 ```

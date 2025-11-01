@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawPal - Login</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <style>
+        /* Custom styles for auth page */
+        .auth-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header h1 {
+            color: #000000;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-card h3 {
+            color: #000000;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #000000;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 89, 152, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--text-light);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6c7d;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #000000;
+        }
+
+        .link-btn {
+            color: #000000;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .link-btn:hover {
+            text-decoration: underline;
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, var(--success), #40c463);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+
+        .user-info h3 {
+            margin: 0 0 0.5rem 0;
+            color: white;
+        }
+
+        .mode-info {
+            background: var(--bg);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-top: 1rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .divider {
+            margin: 2rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 1rem;
+            color: #000000;
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #000000;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .auth-links p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <a href="template.html" class="back-link">← Back to Home</a>
+
+        <div class="auth-header">
+            <h1>PawPal</h1>
+            <p>Welcome back to your pet's best friend</p>
+        </div>
+
+        <!-- Auth Section -->
+        <div class="auth-card">
+            <!-- Login view -->
+            <div id="loginView">
+                <h3>Login</h3>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Login</button>
+                </form>
+
+                <div class="auth-links">
+                    <p>Don't have an account? <a href="#" onclick="showSignup()" class="link-btn">Create Account</a></p>
+                </div>
+            </div>
+
+            <!-- Signup view -->
+            <div id="signupView" class="hidden">
+                <h3>Create Account</h3>
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input type="text" id="signupName" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email</label>
+                        <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" placeholder="Create a password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupConfirm">Confirm Password</label>
+                        <input type="password" id="signupConfirm" placeholder="Confirm your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                </form>
+
+                <div class="auth-links">
+                    <p>Already have an account? <a href="#" onclick="showLogin()" class="link-btn">Login</a></p>
+                </div>
+            </div>
+
+            <!-- Logged in view -->
+            <div id="loggedIn" class="hidden">
+                <div class="user-info">
+                    <h3>Welcome back, <span id="userName"></span>!</h3>
+                    <p><strong>Email:</strong> <span id="userEmail"></span></p>
+                    <p><strong>Member since:</strong> <span id="userSince"></span></p>
+                    <button class="btn btn-secondary btn-full" onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>    </div>
+        </div>
+    </div>
+
+    <!-- Load the auth module -->
+    <script src="assets/auth-module.js"></script>
+
+    <script>
+        // Initialize auth with localStorage mode
+        let auth = new PawPalAuth({
+            storageKey: 'example_app_user',
+            usersKey: 'example_app_users',
+            onAuthChange: updateUI,
+            // Uncomment to use API mode:
+            // apiEndpoint: 'http://localhost:5000'
+        });
+
+        // Initialize UI
+        updateUI(auth.getCurrentUser());
+
+        function updateUI(user) {
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            const protectedContent = document.getElementById('protectedContent');
+            const publicContent = document.getElementById('publicContent');
+
+            if (user) {
+                // User is logged in
+                notLoggedIn.classList.add('hidden');
+                loggedIn.classList.remove('hidden');
+                protectedContent.classList.remove('hidden');
+                publicContent.classList.add('hidden');
+
+                // Update user info
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userSince').textContent = new Date(user.createdAt).toLocaleDateString();
+            } else {
+                // User is not logged in
+                notLoggedIn.classList.remove('hidden');
+                loggedIn.classList.add('hidden');
+                protectedContent.classList.add('hidden');
+                publicContent.classList.remove('hidden');
+            }
+        }
+
+        // Form event listeners
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const userData = {
+                name: document.getElementById('signupName').value,
+                email: document.getElementById('signupEmail').value,
+                password: document.getElementById('signupPassword').value,
+                confirmPassword: document.getElementById('signupConfirm').value
+            };
+
+            const result = await auth.signup(userData);
+
+            if (result.success) {
+                auth.showMessage(`Welcome ${result.user.name}! Account created successfully.`, 'success');
+                this.reset();
+            } else {
+                auth.showMessage(result.error, 'error');
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const credentials = {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
+            };
+
+            const result = await auth.login(credentials);
+
+            if (result.success) {
+                auth.showMessage(`Welcome back, ${result.user.name}!`, 'success');
+                this.reset();
+            } else {
+                auth.showMessage(result.error, 'error');
+            }
+        });
+
+        async function handleLogout() {
+            const result = await auth.logout();
+            if (result.success) {
+                auth.showMessage('Logged out successfully!', 'success');
+            }
+        }
+
+        async function refreshUserData() {
+            const result = await auth.refreshUser();
+            if (result.success) {
+                auth.showMessage('User data refreshed!', 'info');
+            } else {
+                auth.showMessage(result.error, 'error');
+            }
+        }
+
+        function switchToApiMode() {
+            if (confirm('Switch to API mode? This will require a Flask server running on localhost:5000')) {
+                auth = new PawPalAuth({
+                    apiEndpoint: 'http://localhost:5000',
+                    onAuthChange: updateUI
+                });
+                document.getElementById('currentMode').textContent = 'API Mode';
+                auth.showMessage('Switched to API mode. Make sure Flask server is running!', 'info');
+                updateUI(null); // Reset UI
+            }
+        }
+
+        // Demo: Log auth state changes
+        auth.config.onAuthChange = function(user) {
+            console.log('Auth state changed:', user ? `Logged in as ${user.name}` : 'Logged out');
+            updateUI(user);
+        };
+
+        // View switching functions
+        function showSignup() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('signupView').classList.remove('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('signupView').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
+
