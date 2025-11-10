@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PawPal Dashboard</title>
+
+  <!-- Uses existing stylesheets -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="template.css">
+</head>
+<body>
+
+  <!-- Optional top header bar - purely cosmetic -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="template.html" class="logo">
+        <span class="logo-icon">🐾</span>
+        <span class="logo-text">PawPal</span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="template.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="modular-login.html" class="btn btn-outline">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- background image setup -->
+  <div class="background-overlay">
+    <div class="dashboard-wrapper">
+
+      <header class="dashboard-header">
+        <h1>PawPal Dashboard</h1>
+        <p>
+          Quick snapshot of your pets, medications, and upcoming vet care.
+        </p>
+      </header>
+
+      <main class="dashboard-grid">
+        <!-- Card 1: Pets -->
+        <section class="dashboard-card">
+          <h2>Your Pets</h2>
+          <ul>
+            <li><strong>Bella</strong> – Dog • Age 4 • Allergies</li>
+            <li><strong>Whiskers</strong> – Cat • Age 2 • Indoor</li>
+          </ul>
+        </section>
+
+        <!-- Card 2: Medications -->
+        <section class="dashboard-card">
+          <h2>Upcoming Medications</h2>
+          <ul>
+            <li>Bella – Apoquel – Today at 6:00 PM</li>
+            <li>Whiskers – Flea Treatment – Nov 10</li>
+          </ul>
+        </section>
+
+        <!-- Card 3: Appointments -->
+        <section class="dashboard-card">
+          <h2>Vet Appointments</h2>
+          <ul>
+            <li>Nov 15 – Wellness exam for Bella</li>
+            <li>Dec 2 – Dental cleaning for Whiskers</li>
+          </ul>
+        </section>
+      </main>
+
+      <footer class="dashboard-footer">
+        <a href="template.html" class="cta-button-link">
+          <button class="cta-button">Back to Home</button>
+        </a>
+      </footer>
+
+    </div>
+  </div>
+
+</body>
+</html>
