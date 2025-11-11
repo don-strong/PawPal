@@ -14,7 +14,7 @@ A Pet Medication Tracker for Owners
 |------|------|-----------------|
 | Jesse Singleton | Project Developer | @CodeSkrillington |
 | Emilee Stone | Project Developer | @mlee-stone |
-| Chase Anderson | Project Developer | @chaseanderson |
+| Chase Andersen | Project Developer | @chaseandersen |
 
 ---
 
@@ -40,6 +40,8 @@ The project aims to:
 ### Frontend Pages
 - `template.html` — Basic website template with customizable background image
 - `modular-login.html` — Login/signup demo showing how to use the auth module
+- `dashboard.html` — Modular dashboard page showing pets, medications, and appointments
+
 
 ### Modular Authentication System
 - `auth-module.js` — **Reusable authentication library** (frontend)
@@ -63,8 +65,10 @@ The project aims to:
 - ✅ **Frontend Authentication** - LocalStorage-based user management
 - ✅ **Backend Authentication API** - Flask API with production-ready endpoints
 - ✅ **Responsive Design** - Mobile-friendly UI with modern styling
-- ✅ **Custom Branding** - PawPal theme with consistent styling across pages
+- ✅ **Custom Branding & Theming** - Unified PawPal color palette and layout across all pages
 - ✅ **Background Image Support** - Website template with customizable background
+- ✅ **Dashboard Page** - Modular, standalone dashboard displaying sample pet, medication, and appointment cards
+
 
 > *Stretch Goals (Future):*
 - Pet Profiles: Create and manage pet information (name, species, age, medical history)
@@ -86,6 +90,8 @@ The project aims to:
 - Medication tracking system
 - Basic reminder functionality
 - Dashboard for viewing upcoming doses
+- Connect dashboard to live data from backend API
+
 
 > **Phase 3 (Extended):**
 - Calendar view for medication schedules

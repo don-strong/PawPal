@@ -249,16 +249,10 @@ def internal_error(error):
     db.session.rollback()
     return jsonify({'error': 'Internal server error'}), 500
 
-# ==================== DATABASE INITIALIZATION ====================
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
 # ==================== MAIN ====================
 
 if __name__ == '__main__':
-    # Create tables
+    # Create tables on startup (Flask 3-compatible replacement for before_first_request)
     with app.app_context():
         db.create_all()
     
