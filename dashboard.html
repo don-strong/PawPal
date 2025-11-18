@@ -14,15 +14,15 @@
   <!-- Optional top header bar - purely cosmetic -->
   <header class="site-header">
     <div class="container header-inner">
-      <a href="template.html" class="logo">
+      <a href="home.html" class="logo">
         <span class="logo-icon">🐾</span>
         <span class="logo-text">PawPal</span>
       </a>
 
       <nav class="main-nav">
-        <a href="template.html">Home</a>
+        <a href="home.html">Home</a>
         <a href="dashboard.html">Dashboard</a>
-        <a href="modular-login.html" class="btn btn-outline">Login</a>
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
       </nav>
     </div>
   </header>
@@ -68,13 +68,18 @@
       </main>
 
       <footer class="dashboard-footer">
-        <a href="template.html" class="cta-button-link">
+        <a href="home.html" class="cta-button-link">
           <button class="cta-button">Back to Home</button>
         </a>
       </footer>
 
     </div>
   </div>
+
+  <!-- Load the auth module -->
+  <script src="auth-module.js"></script>
+  <!-- Load dashboard functionality -->
+  <script src="dashboard.js"></script>
 
 </body>
 </html>

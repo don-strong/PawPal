@@ -68,6 +68,7 @@ The project aims to:
 - ✅ **Custom Branding & Theming** - Unified PawPal color palette and layout across all pages
 - ✅ **Background Image Support** - Website template with customizable background
 - ✅ **Dashboard Page** - Modular, standalone dashboard displaying sample pet, medication, and appointment cards
+- ✅ **Home Page** - Home page, ability to add animals tied to selected user
 
 
 > *Stretch Goals (Future):*

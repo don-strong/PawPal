@@ -940,3 +940,412 @@ body {
 .dashboard-footer {
   margin-top: 24px;
 }
+
+/* ==================== HOME PAGE STYLES ==================== */
+
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.welcome-header {
+  background: linear-gradient(135deg, #3b5998, #2d4373);
+  color: white;
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.welcome-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+}
+
+.welcome-header p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.home-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem;
+}
+
+.home-card h2 {
+  margin: 0 0 1rem 0;
+  color: #000000;
+  font-size: 1.5rem;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 0.5rem;
+}
+
+/* Calendar Styles */
+.calendar {
+  width: 100%;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: var(--bg);
+  border-radius: var(--radius);
+}
+
+.calendar-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #000000;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.calendar-nav button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.calendar-nav button:hover {
+  background: var(--primary-dark);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.calendar-day-header {
+  text-align: center;
+  padding: 0.5rem;
+  font-weight: bold;
+  color: #000000;
+  font-size: 0.9rem;
+  background: var(--bg);
+  border-radius: var(--radius);
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.calendar-day:hover {
+  background: var(--bg);
+  border-color: var(--primary);
+}
+
+.calendar-day.other-month {
+  color: var(--text-light);
+  opacity: 0.5;
+}
+
+.calendar-day.today {
+  background: var(--primary);
+  color: white;
+  font-weight: bold;
+  border-color: var(--primary);
+}
+
+.calendar-day.has-event {
+  background: #e7f5ff;
+  border-color: var(--primary);
+}
+
+/* Pets List Styles */
+.pets-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pet-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  background: var(--bg);
+  border-radius: var(--radius);
+  border-left: 4px solid var(--primary);
+  transition: all 0.2s ease;
+}
+
+.pet-item:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
+}
+
+.pet-icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.pet-info {
+  flex: 1;
+}
+
+.pet-name {
+  font-weight: bold;
+  color: #f5f1f1;
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+}
+
+.pet-details {
+  color: #f5f1f1;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.add-pet-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.add-pet-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.no-pets {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-light);
+}
+
+.logout-btn {
+  background: var(--text-light);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+  background: #5a6c7d;
+}
+
+/* ==================== LOGIN PAGE STYLES ==================== */
+
+.auth-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-header h1 {
+  color: #000000;
+  margin-bottom: 0.5rem;
+}
+
+.auth-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.auth-card h3 {
+  color: #000000;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #000000;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 89, 152, 0.1);
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--text-light);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #5a6c7d;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #000000;
+}
+
+.link-btn {
+  color: #000000;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+.user-info {
+  background: linear-gradient(135deg, var(--success), #40c463);
+  color: white;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+.user-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: white;
+}
+
+.mode-info {
+  background: var(--bg);
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-top: 1rem;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.divider {
+  margin: 2rem 0;
+  text-align: center;
+  position: relative;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+.divider span {
+  background: white;
+  padding: 0 1rem;
+  color: #000000;
+  font-size: 0.9rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #000000;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.auth-links p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #000000;
+}
