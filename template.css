@@ -7,9 +7,10 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    height: 100vh;
-    overflow: hidden;
+font-family: 'Arial', sans-serif;
+/* allow the page to grow and scroll when content exceeds the viewport */
+min-height: 100vh;
+overflow-y: auto;
 }
 
 /* BACKGROUND IMAGE SETUP - EASY TO CHANGE */
