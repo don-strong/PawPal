@@ -288,7 +288,22 @@ class PawPalAuth {
       options.body = JSON.stringify(data);
     }
 
-    return fetch(url, options);
+    // Log the outgoing API request, including method, URL, and any dataor headers bneing sent.
+    // This helps with debugging and monitoring API interactions.
+    console.log(`🔵 [API Request] ${method} ${url}`, { data, headers: options.headers });
+    
+    try {
+      const response = await fetch(url, options);
+      console.log(`🟢 [API Response] ${method} ${url} - Status: ${response.status}`, response);
+      
+      // returns the raw response for further processing
+      return response;
+    } catch (error) {
+      
+      // Log the error details for debugging
+      console.error(`🔴 [API Error] ${method} ${url} - ${error.message}`, error);
+      throw error;
+    }
   }
 
   // ==================== HELPERS ====================

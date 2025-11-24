@@ -1,0 +1,6 @@
+# A plain text file to specifiy intentiaally untracked files in Git
+# See https://git-scm.com/docs/gitignore for more information
+
+# Ignoring environment variable files (.env)
+.env
+

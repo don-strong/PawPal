@@ -3,10 +3,11 @@
  * Handles user authentication, pets management, and calendar functionality
  */
 
-// Initialize auth
+// Initialize auth with API mode to connect to Flask backend
 let auth = new PawPalAuth({
   storageKey: 'example_app_user',
-  usersKey: 'example_app_users'
+  usersKey: 'example_app_users',
+  apiEndpoint: 'http://localhost:5001'
 });
 
 // Calendar state
@@ -27,6 +28,15 @@ if (!currentUser) {
   
   // Initialize calendar
   initCalendar();
+  
+  // Load user's pets (async)
+  loadUserPets().catch(err => {
+    console.error('Failed to load pets:', err);
+    const petsContainer = document.getElementById('petsContainer');
+    if (petsContainer) {
+      petsContainer.innerHTML = '<p style="color: red;">Failed to load pets. Make sure Flask is running.</p>';
+    }
+  });
 }
 
 // Logout function
@@ -39,9 +49,9 @@ async function handleLogout() {
 
 // ==================== PETS MANAGEMENT ====================
 
-function loadUserPets() {
+async function loadUserPets() {
   const petsContainer = document.getElementById('petsContainer');
-  const pets = getUserPets();
+  const pets = await getUserPets();
 
   if (pets.length === 0) {
     petsContainer.innerHTML = `
@@ -58,24 +68,21 @@ function loadUserPets() {
   pets.forEach(pet => {
     const petItem = document.createElement('li');
     petItem.className = 'pet-item';
-    petItem.dataset.petId = pet.id;
-    const icon = pet.type === 'dog' ? '🐕' : pet.type === 'cat' ? '🐈' : '🐾';
+    petItem.dataset.petId = pet.pet_id || pet.id;
+    const icon = pet.species === 'dog' ? '🐕' : pet.species === 'cat' ? '🐈' : '🐾';
 
     petItem.innerHTML = `
       <div class="pet-icon">${icon}</div>
       <div class="pet-info">
         <p class="pet-name">${pet.name}</p>
         <p class="pet-details">
-          ${pet.breed ? pet.breed + ' • ' : ''}${pet.type}${pet.age ? ' • ' + pet.age + ' ' + (pet.age === 1 ? 'year' : 'years') : ''}
-          ${pet.sex ? ' • ' + pet.sex : ''}
+          ${pet.breed ? pet.breed + ' • ' : ''}${pet.species}${pet.age ? ' • ' + pet.age + ' ' + (pet.age === 1 ? 'year' : 'years') : ''}
         </p>
-        ${pet.medicine ? '<p class="pet-medicine">💊 Medicine: ' + pet.medicine + '</p>' : ''}
-        ${pet.notes ? '<p class="pet-notes">📝 ' + pet.notes + '</p>' : ''}
       </div>
       <div class="pet-actions">
-        <button class="pet-btn details" data-action="details" data-id="${pet.id}">Details & Edit</button>
-        <button class="pet-btn dashboard" data-action="dashboard" data-id="${pet.id}">Dashboard</button>
-        <button class="pet-btn delete" data-action="delete" data-id="${pet.id}">Delete</button>
+        <button class="pet-btn details" data-action="details" data-id="${pet.pet_id || pet.id}">Details & Edit</button>
+        <button class="pet-btn dashboard" data-action="dashboard" data-id="${pet.pet_id || pet.id}">Dashboard</button>
+        <button class="pet-btn delete" data-action="delete" data-id="${pet.pet_id || pet.id}">Delete</button>
       </div>
     `;
 
@@ -96,12 +103,33 @@ async function addNewPet() {
   const pet = await promptPetDetails();
   if (!pet) return;
 
-  const pets = getUserPets();
-  pets.push(pet);
-  saveUserPets(pets);
+  try {
+    // POST to Flask API
+    const response = await fetch('http://localhost:5001/pets/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentUser.token}`
+      },
+      body: JSON.stringify({
+        name: pet.name,
+        species: pet.type || pet.species,
+        breed: pet.breed,
+        age: pet.age
+      })
+    });
 
-  loadUserPets();
-  auth.showMessage(`${pet.name} has been added!`, 'success');
+    if (response.ok) {
+      const result = await response.json();
+      auth.showMessage(`${pet.name} has been added!`, 'success');
+      loadUserPets();
+    } else {
+      const error = await response.json();
+      auth.showMessage(error.error || 'Failed to create pet', 'error');
+    }
+  } catch (err) {
+    auth.showMessage('Error: ' + err.message, 'error');
+  }
 }
 
 function handlePetAction(petId, action) {
@@ -136,19 +164,32 @@ function goToPetDashboard(petId) {
   window.location.href = 'dashboard.html';
 }
 
-function deletePet(petId) {
-  const pets = getUserPets();
-  const pet = pets.find(p => p.id === petId);
+async function deletePet(petId) {
+  const pets = await getUserPets();
+  const pet = pets.find(p => (p.pet_id || p.id) === petId);
   if (!pet) return;
 
   const confirmed = confirm(`Are you sure you want to remove ${pet.name}?`);
   if (!confirmed) return;
 
-  const filtered = pets.filter(p => p.id !== petId);
-  saveUserPets(filtered);
+  try {
+    const response = await fetch(`http://localhost:5001/pets/${petId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${currentUser.token}`
+      }
+    });
 
-  loadUserPets();
-  auth.showMessage(`${pet.name} has been removed.`, 'info');
+    if (response.ok) {
+      auth.showMessage(`${pet.name} has been removed.`, 'info');
+      loadUserPets();
+    } else {
+      const error = await response.json();
+      auth.showMessage(error.error || 'Failed to delete pet', 'error');
+    }
+  } catch (err) {
+    auth.showMessage('Error: ' + err.message, 'error');
+  }
 }
 
 function showPetDetailAndEdit(petId) {
@@ -325,15 +366,26 @@ function promptPetDetails(existing = {}) {
   });
 }
 
-function getUserPets() {
-  const userPetsKey = `pawpal_pets_${currentUser.email}`;
-  const petsData = localStorage.getItem(userPetsKey);
-  return petsData ? JSON.parse(petsData) : [];
-}
+async function getUserPets() {
+  try {
+    const response = await fetch('http://localhost:5001/pets', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${currentUser.token}`
+      }
+    });
 
-function saveUserPets(pets) {
-  const userPetsKey = `pawpal_pets_${currentUser.email}`;
-  localStorage.setItem(userPetsKey, JSON.stringify(pets));
+    if (response.ok) {
+      const pets = await response.json();
+      return pets;
+    } else {
+      console.error('Failed to fetch pets');
+      return [];
+    }
+  } catch (err) {
+    console.error('Error fetching pets:', err);
+    return [];
+  }
 }
 
 // ==================== CALENDAR ====================

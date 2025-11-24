@@ -3,13 +3,13 @@
  * Handles user authentication (login/signup) and UI updates
  */
 
-// Initialize auth with localStorage mode
+// Initialize auth with API mode to connect to Flask backend
 let auth = new PawPalAuth({
     storageKey: 'example_app_user',
     usersKey: 'example_app_users',
     onAuthChange: updateUI,
-    // Uncomment to use API mode:
-    // apiEndpoint: 'http://localhost:5000'
+    // Connect to Flask backend on port 5001
+    apiEndpoint: 'http://localhost:5001'
 });
 
 // Initialize UI
@@ -48,7 +48,9 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         confirmPassword: document.getElementById('signupConfirm').value
     };
 
+    console.log('📝 [Signup] Starting signup...');
     const result = await auth.signup(userData);
+    console.log('📝 [Signup] Result:', result);
 
     if (result.success) {
         auth.showMessage(`Welcome ${result.user.name}! Account created successfully.`, 'success');
@@ -58,7 +60,8 @@ document.getElementById('signupForm').addEventListener('submit', async function(
             window.location.href = 'home.html';
         }, 1000);
     } else {
-        auth.showMessage(result.error, 'error');
+        auth.showMessage(result.error || 'Signup failed', 'error');
+        console.error('📝 [Signup] Error:', result.error);
     }
 });
 
@@ -68,8 +71,10 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         email: document.getElementById('loginEmail').value,
         password: document.getElementById('loginPassword').value
     };
-
+    
+    console.log('🔑 [Login] Starting login...');
     const result = await auth.login(credentials);
+    console.log('🔑 [Login] Result:', result);
 
     if (result.success) {
         auth.showMessage(`Welcome back, ${result.user.name}!`, 'success');
@@ -79,7 +84,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             window.location.href = 'home.html';
         }, 1000);
     } else {
-        auth.showMessage(result.error, 'error');
+        auth.showMessage(result.error || 'Login failed', 'error');
+        console.error('🔑 [Login] Error:', result.error);
     }
 });
 

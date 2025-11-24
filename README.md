@@ -59,6 +59,36 @@ The project aims to:
 
 ---
 
+## 🚀 Quick Start for Developers
+
+**See [`RUNNING.md`](./RUNNING.md) for complete setup instructions (macOS/Linux/Windows).**
+
+**Quick TL;DR:**
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Set up .env file (ask team for credentials)
+cp .env.example .env  # or create .env with DB connection details
+
+# 3. Run Flask backend (port 5001)
+python flask_auth_api.py
+
+# 4. Open HTML frontend in browser
+# Point to modular-login.html or use a local server:
+python -m http.server 8000
+
+# 5. Navigate to http://localhost:8000/modular-login.html
+```
+
+**Tech Stack:**
+- **Backend:** Flask + SQLAlchemy + PostgreSQL
+- **Frontend:** Vanilla JavaScript + HTML/CSS
+- **Authentication:** JWT tokens (7-day expiry)
+- **API Port:** 5001 | **Frontend Port:** 8000
+
+---
+
 ## ⚙️ Current Features  
 
 > *Core Features Implemented:*
