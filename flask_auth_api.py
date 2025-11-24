@@ -20,6 +20,9 @@ from urllib.parse import quote_plus
 
 app = Flask(__name__)
 
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
+
 # Configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-change-in-production')
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///pawpal.db')
@@ -381,6 +384,75 @@ def delete_pet(current_user, pet_id):
     db.session.commit()
     
     return jsonify({'message': 'Pet deleted successfully'}), 200
+
+# ==================== MEDICATION ROUTES ====================
+
+@app.route('/pets/<int:pet_id>/medications', methods=['GET'])
+@token_required
+def get_medications(current_user, pet_id):
+    """Get all medications for a pet that belongs to the current user."""
+    # Make sure the pet belongs to this user
+    pet = Pet.query.filter_by(pet_id=pet_id, user_id=current_user.user_id).first()
+    if not pet:
+        return jsonify({'error': 'Pet not found'}), 404
+
+    meds = Medication.query.filter_by(pet_id=pet.pet_id).all()
+    return jsonify([m.to_dict() for m in meds]), 200
+
+
+@app.route('/pets/<int:pet_id>/medications', methods=['POST'])
+@token_required
+def create_medication(current_user, pet_id):
+    """Create a new medication record for a pet."""
+    pet = Pet.query.filter_by(pet_id=pet_id, user_id=current_user.user_id).first()
+    if not pet:
+        return jsonify({'error': 'Pet not found'}), 404
+
+    data = request.get_json() or {}
+    name = (data.get('name') or '').strip()
+    dosage = (data.get('dosage') or '').strip()
+    frequency = (data.get('frequency') or '').strip()
+
+    if not all([name, dosage, frequency]):
+        return jsonify({'error': 'name, dosage, and frequency are required'}), 400
+
+    # start_time = now; end_time optional
+    start_time = datetime.datetime.utcnow()
+    end_time = None
+
+    med = Medication(
+        name=name,
+        dosage=dosage,
+        frequency=frequency,
+        start_time=start_time,
+        end_time=end_time,
+        pet_id=pet.pet_id
+    )
+
+    db.session.add(med)
+    db.session.commit()
+
+    return jsonify({'message': 'Medication created', 'medication': med.to_dict()}), 201
+
+
+@app.route('/medications/<int:medication_id>', methods=['DELETE'])
+@token_required
+def delete_medication(current_user, medication_id):
+    """Delete a medication record belonging to the current user."""
+    # Look up the medication
+    med = Medication.query.get(medication_id)
+    if not med:
+        return jsonify({'error': 'Medication not found'}), 404
+
+    # Make sure the medication's pet belongs to this user
+    pet = Pet.query.filter_by(pet_id=med.pet_id, user_id=current_user.user_id).first()
+    if not pet:
+        return jsonify({'error': 'Not authorized to delete this medication'}), 403
+
+    db.session.delete(med)
+    db.session.commit()
+    return jsonify({'message': 'Medication deleted'}), 200
+
 
 # ==================== ERROR HANDLERS ====================
 
