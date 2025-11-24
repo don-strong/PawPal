@@ -1,0 +1,10 @@
+# Requirements for PawPal Flask backend
+# Pin versions if you want reproducible installs; these are kept unpinned for flexibility.
+Flask
+Flask-SQLAlchemy
+Flask-Cors
+PyJWT
+Werkzeug
+Flask-Migrate
+psycopg2-binary  # PostgreSQL adapter (only needed if you use Postgres)
+python-dotenv    # optional: load env vars from a .env file

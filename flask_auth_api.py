@@ -9,7 +9,14 @@ import jwt
 import datetime
 import os
 import re
+import dotenv
 from functools import wraps
+from dotenv import load_dotenv
+
+import logging
+load_dotenv()
+
+from urllib.parse import quote_plus
 
 app = Flask(__name__)
 
@@ -36,12 +43,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize extensions
 db = SQLAlchemy(app)
-CORS(app, origins=['http://localhost:8000', 'http://127.0.0.1:8000'])  # Configure for your frontend
+# Enable CORS for development - allow requests from any origin
+CORS(app, resources={
+    r"/auth/*": {"origins": "*"},
+    r"/pets/*": {"origins": "*"}
+}, supports_credentials=True)
 
 # ==================== MODELS ====================
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
@@ -56,12 +67,51 @@ class User(db.Model):
 
     def to_dict(self):
         return {
-            'id': self.id,
+            'user_id': self.user_id,
             'name': self.name,
             'email': self.email,
             'created_at': self.created_at.isoformat(),
             'is_active': self.is_active
         }
+    
+class Pet(db.Model):
+    pet_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    species = db.Column(db.String(50), nullable=False)
+    breed = db.Column(db.String(100), nullable=True)
+    age = db.Column(db.Integer, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+
+    def to_dict(self):
+        return {
+            'pet_id': self.pet_id,
+            'name': self.name,
+            'species': self.species,
+            'breed': self.breed,
+            'age': self.age,
+            'user_id': self.user_id
+        }
+
+class Medication(db.Model):
+    medication_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    dosage = db.Column(db.String(100), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
+    end_time = db.Column(db.DateTime, nullable=True)
+    frequency = db.Column(db.String(100), nullable=False)
+    pet_id = db.Column(db.Integer, db.ForeignKey('pet.pet_id'), nullable=False)
+
+    def to_dict(self):
+        return {
+            'medication_id': self.medication_id,
+            'name': self.name,
+            'dosage': self.dosage,
+            'frequency': self.frequency,
+            'pet_id': self.pet_id,
+            'start_time': self.start_time.isoformat() if self.start_time else None,
+            'end_time': self.end_time.isoformat() if self.end_time else None
+        }
+
 
 # ==================== HELPERS ====================
 
@@ -77,7 +127,11 @@ def generate_token(user_id):
         'user_id': user_id,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)  # Token expires in 7 days
     }
-    return jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+    token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+    # PyJWT may return bytes on some versions; ensure string
+    if isinstance(token, bytes):
+        token = token.decode('utf-8')
+    return token
 
 def verify_token(token):
     try:
@@ -156,7 +210,7 @@ def signup():
         db.session.commit()
         
         # Generate token
-        token = generate_token(user.id)
+        token = generate_token(user.user_id)
         
         # Return user data with token
         user_data = user.to_dict()
@@ -192,7 +246,7 @@ def login():
             return jsonify({'error': 'Account is disabled'}), 401
         
         # Generate token
-        token = generate_token(user.id)
+        token = generate_token(user.user_id)
         
         # Return user data with token
         user_data = user.to_dict()
@@ -250,6 +304,84 @@ def change_password(current_user):
         db.session.rollback()
         return jsonify({'error': 'Internal server error'}), 500
 
+ # ==================== PET ROUTES ====================
+ 
+# Create a new pet
+@app.route('/pets/create', methods=['POST'])
+@token_required
+def create_pet(current_user):
+    data = request.get_json()
+    name = data.get('name', '').strip()
+    species = data.get('species', '').strip()
+    breed = data.get('breed', '').strip()
+    age = data.get('age')
+
+    if not all([name, species]):
+        return jsonify({'error': 'Name and species are required'}), 400
+
+    pet = Pet(name=name, species=species, breed=breed, age=age, user_id=current_user.user_id)
+    db.session.add(pet)
+    db.session.commit()
+
+    return jsonify({'message': 'Pet created successfully', 'pet': pet.to_dict()}), 201
+
+# Get pet by ID
+@app.route('/pets', methods=['GET'])
+@token_required
+def get_pets(current_user):
+    pets = Pet.query.filter_by(user_id=current_user.user_id).all()
+    # Return an empty list if user has no pets (200)
+    return jsonify([{
+        'id': pet.pet_id,
+        'name': pet.name,
+        'species': pet.species,
+        'breed': pet.breed,
+        'age': pet.age
+    } for pet in pets]), 200
+
+# Update a Pet
+@app.route('/pets/<int:pet_id>', methods=['PUT'])
+@token_required
+def update_pet(current_user, pet_id):
+    data = request.get_json() or {}
+    pet = Pet.query.filter_by(pet_id=pet_id, user_id=current_user.user_id).first()
+    if not pet:
+        return jsonify({'error': 'Pet not found'}), 404
+
+    # Update allowed fields if provided
+    name = data.get('name')
+    species = data.get('species')
+    breed = data.get('breed')
+    age = data.get('age')
+
+    if name is not None:
+        pet.name = name.strip()
+    if species is not None:
+        pet.species = species.strip()
+    if breed is not None:
+        pet.breed = breed.strip()
+    if age is not None:
+        try:
+            pet.age = int(age)
+        except (ValueError, TypeError):
+            return jsonify({'error': 'Age must be an integer'}), 400
+
+    db.session.commit()
+    return jsonify({'message': 'Pet updated successfully', 'pet': pet.to_dict()}), 200
+
+# Delete a Pet
+@app.route('/pets/<int:pet_id>', methods=['DELETE'])
+@token_required
+def delete_pet(current_user, pet_id):
+    pet = Pet.query.filter_by(pet_id=pet_id, user_id=current_user.user_id).first()
+    if not pet:
+        return jsonify({'error': 'Pet not found'}), 404
+    
+    db.session.delete(pet)
+    db.session.commit()
+    
+    return jsonify({'message': 'Pet deleted successfully'}), 200
+
 # ==================== ERROR HANDLERS ====================
 
 @app.errorhandler(404)
@@ -273,4 +405,4 @@ if __name__ == '__main__':
         db.create_all()
     
     # Run the app
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)
