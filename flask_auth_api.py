@@ -39,13 +39,18 @@ if all([db_host, db_port, db_name, db_user, db_password]):
     safe_password = quote_plus(db_password)
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{safe_password}@{db_host}:{db_port}/{db_name}'
 else:
-    # Use DATABASE_URL if provided, otherwise default to a local sqlite file for dev
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///pawpal.db')
+    # Use a Windows temp directory for SQLite to avoid WSL file locking issues
+    import tempfile
+    temp_dir = tempfile.gettempdir()
+    db_path = os.path.join(temp_dir, 'pawpal.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+    print(f"Using SQLite database at: {db_path}")
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize extensions
 db = SQLAlchemy(app)
+
 # Enable CORS for development - allow requests from any origin
 CORS(app, resources={
     r"/auth/*": {"origins": "*"},
@@ -83,6 +88,11 @@ class Pet(db.Model):
     species = db.Column(db.String(50), nullable=False)
     breed = db.Column(db.String(100), nullable=True)
     age = db.Column(db.Integer, nullable=True)
+    weight = db.Column(db.Float, nullable=True)
+    sex = db.Column(db.String(20), nullable=True)
+    medicine = db.Column(db.String(500), nullable=True)
+    notes = db.Column(db.Text, nullable=True)
+    image = db.Column(db.Text, nullable=True)  # Base64 encoded image
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
 
     def to_dict(self):
@@ -92,6 +102,11 @@ class Pet(db.Model):
             'species': self.species,
             'breed': self.breed,
             'age': self.age,
+            'weight': self.weight,
+            'sex': self.sex,
+            'medicine': self.medicine,
+            'notes': self.notes,
+            'image': self.image,
             'user_id': self.user_id
         }
 
@@ -316,13 +331,29 @@ def create_pet(current_user):
     data = request.get_json()
     name = data.get('name', '').strip()
     species = data.get('species', '').strip()
-    breed = data.get('breed', '').strip()
+    breed = data.get('breed', '').strip() if data.get('breed') else None
     age = data.get('age')
+    weight = data.get('weight')
+    sex = data.get('sex', '').strip() if data.get('sex') else None
+    medicine = data.get('medicine', '').strip() if data.get('medicine') else None
+    notes = data.get('notes', '').strip() if data.get('notes') else None
+    image = data.get('image') if data.get('image') else None
 
     if not all([name, species]):
         return jsonify({'error': 'Name and species are required'}), 400
 
-    pet = Pet(name=name, species=species, breed=breed, age=age, user_id=current_user.user_id)
+    pet = Pet(
+        name=name, 
+        species=species, 
+        breed=breed, 
+        age=age,
+        weight=float(weight) if weight else None,
+        sex=sex,
+        medicine=medicine,
+        notes=notes,
+        image=image,
+        user_id=current_user.user_id
+    )
     db.session.add(pet)
     db.session.commit()
 
@@ -339,7 +370,12 @@ def get_pets(current_user):
         'name': pet.name,
         'species': pet.species,
         'breed': pet.breed,
-        'age': pet.age
+        'age': pet.age,
+        'weight': pet.weight,
+        'sex': pet.sex,
+        'medicine': pet.medicine,
+        'notes': pet.notes,
+        'image': pet.image
     } for pet in pets]), 200
 
 # Update a Pet
@@ -356,18 +392,36 @@ def update_pet(current_user, pet_id):
     species = data.get('species')
     breed = data.get('breed')
     age = data.get('age')
+    weight = data.get('weight')
+    sex = data.get('sex')
+    medicine = data.get('medicine')
+    notes = data.get('notes')
+    image = data.get('image')
 
     if name is not None:
         pet.name = name.strip()
     if species is not None:
         pet.species = species.strip()
     if breed is not None:
-        pet.breed = breed.strip()
+        pet.breed = breed.strip() if breed else None
     if age is not None:
         try:
-            pet.age = int(age)
+            pet.age = int(age) if age else None
         except (ValueError, TypeError):
             return jsonify({'error': 'Age must be an integer'}), 400
+    if weight is not None:
+        try:
+            pet.weight = float(weight) if weight else None
+        except (ValueError, TypeError):
+            return jsonify({'error': 'Weight must be a number'}), 400
+    if sex is not None:
+        pet.sex = sex.strip() if sex else None
+    if medicine is not None:
+        pet.medicine = medicine.strip() if medicine else None
+    if notes is not None:
+        pet.notes = notes.strip() if notes else None
+    if image is not None:
+        pet.image = image if image else None
 
     db.session.commit()
     return jsonify({'message': 'Pet updated successfully', 'pet': pet.to_dict()}), 200
@@ -475,6 +529,7 @@ if __name__ == '__main__':
     # Create tables on startup (Flask 3-compatible replacement for before_first_request)
     with app.app_context():
         db.create_all()
+        print("Database tables created successfully!")
     
     # Run the app
     app.run(debug=True, host='0.0.0.0', port=5001)

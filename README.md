@@ -103,10 +103,25 @@ python -m http.server 8000
 - ✅ **User Account Creation** - Sign up with email and password stored securely in PostgreSQL
 - ✅ **User Login** - Secure login with password verification and 7-day JWT token expiry
 - ✅ **Backend Authentication** - Flask API with token-based authentication and password change support
-- ✅ **Home Page** - Welcome header with user's first name, calendar, and pet list
+- ✅ **Home Page** - Welcome header with user's first name, calendar with day view, and pet list
 - ✅ **Calendar Widget** - Interactive calendar with navigation between months
+- ✅ **Today's Medication Schedule** - Day view showing all scheduled doses:
+  - Color-coded status (given, missed, upcoming)
+  - Automatically calculated based on reminder intervals
+  - Real-time updates when doses are logged
+- ✅ **Medication Reminders** - Browser notification system:
+  - Requests permission on first visit
+  - Sends notifications at scheduled dose times
+  - Notifications include pet name and medication info
+  - Checks every minute for due reminders
 - ✅ **Pet Management (Backend)** - Add, edit, delete pets via Flask API with full details
-- ✅ **Pet Details** - Store name, species, breed, age in PostgreSQL database
+- ✅ **Pet Details** - Store name, species, breed, age, weight, sex, medicine, notes, and photo in PostgreSQL database
+- ✅ **Pet Photo Upload** - Upload and display pet photos with:
+  - Image upload in Add/Edit pet forms with preview
+  - Circular thumbnail in pet list on home page
+  - Large photo display in pet details modal
+  - Photo displayed on pet dashboard
+  - Base64 encoding for database storage (max 2MB)
 - ✅ **Pet List Display** - Fetches all pets from backend API per authenticated user
 - ✅ **Pet-Specific Dashboard** - Each pet has a unique dashboard with:
   - Pet Information card (type, breed, age)
@@ -184,8 +199,9 @@ python -m http.server 8000
 ### Pet Dashboard (`dashboard.html`)
 - Unique dashboard for each selected pet
 - Shows pet icon and name in header
+- **Pet photo** displayed prominently (or species emoji if no photo)
 - Three information cards:
-  1. **Pet Information** - Type, breed, age, sex, weight
+  1. **Pet Information** - Type, breed, age, sex, weight with photo
   2. **Medication** - Medication details with reminder interval settings
   3. **Dose Logging** - Log doses and view recent entries with timestamps
 - Back to Home button
@@ -220,7 +236,6 @@ python -m http.server 8000
 ---
  
 > **Phase 2 (Next Sprint):**
-- Backend API integration for data persistence
 - Email notification system for medication reminders
 - Vet appointment scheduling and tracking
 - Medical history and vaccination records
@@ -229,7 +244,6 @@ python -m http.server 8000
 - Calendar view synchronized with medication schedules
 - PDF report generation for vet visits
 - Multi-pet household dashboard view
-- Photo storage for pet identification
 - Family/caregiver sharing features
 - Admin dashboard
 
