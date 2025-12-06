@@ -947,6 +947,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  min-height: calc(100vh - 200px);
 }
 
 .welcome-header {
@@ -986,6 +987,7 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   padding: 1.5rem;
+  min-height: 400px;
 }
 
 .home-card h2 {
@@ -1134,13 +1136,13 @@ body {
 
 .pet-name {
   font-weight: bold;
-  color: #f5f1f1;
+  color: #000000;
   margin: 0 0 0.25rem 0;
   font-size: 1.1rem;
 }
 
 .pet-details {
-  color: #f5f1f1;
+  color: #000000;
   margin: 0;
   font-size: 0.9rem;
 }

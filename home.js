@@ -15,31 +15,90 @@ let currentDate = new Date();
 
 // Check if user is logged in
 const currentUser = auth.getCurrentUser();
+console.log('🔍 [PageLoad] currentUser from localStorage:', currentUser);
+console.log('🔍 [PageLoad] localStorage content:', localStorage);
+
 if (!currentUser) {
   // Redirect to login if not authenticated
+  console.warn('⚠️  No user found. Redirecting to login page...');
   window.location.href = 'modular-login.html';
 } else {
+  console.log('✅ User found:', currentUser.name);
+  console.log('✅ User has token:', !!currentUser.token);
+  
+  // Wait for DOM to be ready, then initialize page
+  if (document.readyState === 'loading') {
+    console.log('DOM still loading. Waiting for DOMContentLoaded...');
+    document.addEventListener('DOMContentLoaded', initializePage);
+  } else {
+    console.log('DOM already loaded. Initializing page...');
+    initializePage();
+  }
+}
+
+async function initializePage() {
+  console.log('🏠 Initializing home page...');
+  console.log('Current user:', currentUser);
+  
+  // DEBUG: Check parent element visibility
+  const homeContainer = document.querySelector('.home-container');
+  const homeGrid = document.querySelector('.home-grid');
+  const homeCards = document.querySelectorAll('.home-card');
+  
+  console.log('🏠 Parent elements found:', {
+    homeContainer: !!homeContainer,
+    homeGrid: !!homeGrid,
+    homeCardsCount: homeCards.length
+  });
+  
+  if (homeContainer) {
+    console.log('🏠 homeContainer styles:', {
+      display: window.getComputedStyle(homeContainer).display,
+      visibility: window.getComputedStyle(homeContainer).visibility,
+      opacity: window.getComputedStyle(homeContainer).opacity,
+      width: window.getComputedStyle(homeContainer).width,
+      height: window.getComputedStyle(homeContainer).height
+    });
+  }
+  
   // Display user's first name
   const firstName = currentUser.name.split(' ')[0];
-  document.getElementById('userFirstName').textContent = firstName;
-  
-  // Load user's pets
-  loadUserPets();
+  const userFirstNameElement = document.getElementById('userFirstName');
+  if (userFirstNameElement) {
+    userFirstNameElement.textContent = firstName;
+    console.log('✅ Set user name to:', firstName);
+  } else {
+    console.warn('⚠️  userFirstName element not found in DOM');
+  }
   
   // Initialize calendar
-  initCalendar();
+  try {
+    initCalendar();
+    console.log('✅ Calendar initialized');
+  } catch (err) {
+    console.error('❌ Calendar initialization failed:', err);
+  }
   
   // Initialize medication reminders
-  initMedicationReminders();
+  try {
+    initMedicationReminders();
+    console.log('✅ Medication reminders initialized');
+  } catch (err) {
+    console.error('❌ Medication reminders initialization failed:', err);
+  }
   
   // Load user's pets (async)
-  loadUserPets().catch(err => {
-    console.error('Failed to load pets:', err);
+  try {
+    console.log('📦 Loading pets...');
+    await loadUserPets();
+    console.log('✅ Pets loaded successfully');
+  } catch (err) {
+    console.error('❌ Failed to load pets:', err);
     const petsContainer = document.getElementById('petsContainer');
     if (petsContainer) {
-      petsContainer.innerHTML = '<p style="color: red;">Failed to load pets. Make sure Flask is running.</p>';
+      petsContainer.innerHTML = '<p style="color: red;">❌ Failed to load pets. Check browser console and ensure Flask is running on http://localhost:5001</p>';
     }
-  });
+  }
 }
 
 // Logout function
@@ -50,21 +109,66 @@ async function handleLogout() {
   }
 }
 
+// Helper function to get auth token with validation
+function getAuthToken() {
+  if (!currentUser) {
+    console.error('currentUser is null or undefined:', currentUser);
+    console.warn('Attempting logout and redirect to login page');
+    auth.logout();
+    window.location.href = 'modular-login.html';
+    return null;
+  }
+  
+  if (!currentUser.token) {
+    console.error('No token found in currentUser:', currentUser);
+    console.warn('currentUser data:', JSON.stringify(currentUser, null, 2));
+    console.warn('Attempting logout and redirect to login page');
+    auth.logout();
+    window.location.href = 'modular-login.html';
+    return null;
+  }
+  
+  return currentUser.token;
+}
+
 // ==================== PETS MANAGEMENT ====================
 
 async function loadUserPets() {
   const petsContainer = document.getElementById('petsContainer');
+  
+  if (!petsContainer) {
+    console.error('❌ petsContainer element not found in DOM');
+    console.log('Available elements:', document.body.innerHTML.substring(0, 500));
+    return;
+  }
+  
+  console.log('📦 loadUserPets: petsContainer found');
+  console.log('📦 petsContainer HTML before:', petsContainer.innerHTML);
+  
   const pets = await getUserPets();
+  console.log('📦 loadUserPets: Got pets array with', pets.length, 'items');
 
   if (pets.length === 0) {
-    petsContainer.innerHTML = `
-      <div class="no-pets">
-        <p>No pets added yet. Click "Add New Pet" to get started!</p>
+    console.log('📦 No pets found, showing empty state...');
+    const emptyHTML = `
+      <div class="no-pets" style="display: block; color: #7f8c8d; text-align: center; padding: 2rem;">
+        <p style="font-size: 1rem; color: #7f8c8d;">No pets added yet. Click "Add New Pet" to get started!</p>
       </div>
     `;
+    petsContainer.innerHTML = emptyHTML;
+    console.log('📦 petsContainer HTML after:', petsContainer.innerHTML);
+    console.log('📦 petsContainer visibility:', {
+      display: window.getComputedStyle(petsContainer).display,
+      visibility: window.getComputedStyle(petsContainer).visibility,
+      opacity: window.getComputedStyle(petsContainer).opacity,
+      color: window.getComputedStyle(petsContainer).color,
+      backgroundColor: window.getComputedStyle(petsContainer).backgroundColor
+    });
+    console.log('📦 Empty state rendered');
     return;
   }
 
+  console.log('📦 Rendering', pets.length, 'pets...');
   const petsList = document.createElement('ul');
   petsList.className = 'pets-list';
 
@@ -93,12 +197,13 @@ async function loadUserPets() {
         <button class="pet-btn delete" data-action="delete" data-id="${pet.pet_id || pet.id}">Delete</button>
       </div>
     `;
-
     petsList.appendChild(petItem);
   });
 
   petsContainer.innerHTML = '';
   petsContainer.appendChild(petsList);
+  
+  console.log('📦 Pets rendered successfully');
 
   petsList.querySelectorAll('.pet-btn').forEach(button => {
     const action = button.dataset.action;
@@ -112,12 +217,14 @@ async function addNewPet() {
   if (!pet) return;
 
   try {
+    const token = getAuthToken();
+    
     // POST to Flask API
     const response = await fetch('http://localhost:5001/pets/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${currentUser.token}`
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({
         name: pet.name,
@@ -135,7 +242,7 @@ async function addNewPet() {
     if (response.ok) {
       const result = await response.json();
       auth.showMessage(`${pet.name} has been added!`, 'success');
-      loadUserPets();
+      await loadUserPets();
     } else {
       const error = await response.json();
       auth.showMessage(error.error || 'Failed to create pet', 'error');
@@ -181,12 +288,14 @@ async function editPet(petId) {
   if (!updated) return;
 
   try {
+    const token = getAuthToken();
+    
     // Call API to update pet
     const response = await fetch(`http://localhost:5001/pets/${petId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${currentUser.token}`
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({
         name: updated.name,
@@ -230,16 +339,18 @@ async function deletePet(petId) {
   if (!confirmed) return;
 
   try {
+    const token = getAuthToken();
+    
     const response = await fetch(`http://localhost:5001/pets/${petId}`, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${currentUser.token}`
+        'Authorization': `Bearer ${token}`
       }
     });
 
     if (response.ok) {
       auth.showMessage(`${pet.name} has been removed.`, 'info');
-      loadUserPets();
+      await loadUserPets();
     } else {
       const error = await response.json();
       auth.showMessage(error.error || 'Failed to delete pet', 'error');
@@ -515,22 +626,40 @@ function promptPetDetails(existing = {}) {
 
 async function getUserPets() {
   try {
+    const token = getAuthToken();
+    
+    if (!token) {
+      console.error('Token validation failed in getUserPets');
+      return [];
+    }
+
+    console.log('Fetching pets with token:', token.substring(0, 10) + '...');
+
     const response = await fetch('http://localhost:5001/pets', {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${currentUser.token}`
+        'Authorization': `Bearer ${token}`
       }
     });
 
     if (response.ok) {
       const pets = await response.json();
+      console.log('✅ Successfully fetched pets:', pets);
       return pets;
     } else {
-      console.error('Failed to fetch pets');
+      const errorText = await response.text();
+      console.error('Failed to fetch pets. Status:', response.status, 'Response:', errorText);
+      
+      if (response.status === 401) {
+        // Token expired or invalid
+        console.warn('Token invalid (401). Logging out...');
+        await auth.logout();
+        window.location.href = 'modular-login.html';
+      }
       return [];
     }
   } catch (err) {
-    console.error('Error fetching pets:', err);
+    console.error('Error in getUserPets():', err);
     return [];
   }
 }
@@ -729,6 +858,16 @@ async function loadTodaySchedule() {
           <div style="font-weight: 600; color: #3b5998;">${item.timeStr}</div>
           <div style="font-size: 16px;">${statusIcon}</div>
         </div>
+        ${!item.wasLogged ? `
+          <button 
+            onclick="markDoseAsTaken(${item.pet.pet_id || item.pet.id}, '${item.time.toISOString()}')"
+            style="padding: 6px 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap;"
+            onmouseover="this.style.background='#218838'"
+            onmouseout="this.style.background='#28a745'"
+          >
+            ✓ Mark Taken
+          </button>
+        ` : ''}
       </div>
     `;
   });
@@ -806,6 +945,26 @@ async function checkMedicationReminders() {
       loadTodaySchedule();
     }
   }
+}
+
+// Function to mark a dose as taken
+async function markDoseAsTaken(petId, timeString) {
+  const doseLogKey = `pawpal_dose_log_${currentUser.email}_${petId}`;
+  const doseLogs = JSON.parse(localStorage.getItem(doseLogKey) || '[]');
+  
+  // Add new dose log
+  doseLogs.push({
+    timestamp: timeString,
+    note: 'Marked as taken'
+  });
+  
+  localStorage.setItem(doseLogKey, JSON.stringify(doseLogs));
+  
+  // Show success message
+  auth.showMessage('✓ Dose marked as taken!', 'success');
+  
+  // Refresh the schedule to update the UI
+  await loadTodaySchedule();
 }
 
 // Refresh schedule when a dose is logged (called from dashboard)
